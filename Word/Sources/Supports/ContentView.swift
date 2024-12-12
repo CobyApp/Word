@@ -1,11 +1,16 @@
 import SwiftUI
 
-public struct ContentView: View {
-    public init() {}
+import CobyDS
+import ComposableArchitecture
 
-    public var body: some View {
-        Text("Hello, World!")
-            .padding()
+struct ContentView: View {
+
+    var body: some View {
+        NavigationStack {
+            HomeView(store: Store(initialState: HomeStore.State()) {
+                HomeStore()
+            })
+        }
     }
 }
 
