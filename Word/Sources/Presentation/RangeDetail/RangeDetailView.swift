@@ -21,11 +21,15 @@ struct RangeDetailView: View {
     
     var body: some View {
         VStack {
-            Text("\(self.store.level) - \(self.store.range)")
-                .font(.system(size: 32, weight: .bold, design: .default))
-                .padding(.top, 40)
+            VStack(spacing: 0) {
+                TopBarView(
+                    leftAction: { self.store.send(.dismiss) },
+                    title: self.store.range
+                )
+            }
+            
             Spacer()
         }
-        .background(Color(UIColor.systemGray6).ignoresSafeArea())
+        .background(Color.backgroundNormalAlternative)
     }
 }

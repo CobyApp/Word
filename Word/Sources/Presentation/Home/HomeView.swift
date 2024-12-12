@@ -20,9 +20,9 @@ struct HomeView: View {
     }
     
     private let jlptLevels: [(name: String, color: Color)] = [
-        ("JLPT N3", .green),
-        ("JLPT N2", .blue),
-        ("JLPT N1", .red)
+        ("JLPT N3", Color.green40),
+        ("JLPT N2", Color.blue40),
+        ("JLPT N1", Color.red40)
     ]
     
     private let ranges: [String] = [
@@ -42,7 +42,10 @@ struct HomeView: View {
                         JLPTCardView(
                             levelName: level.name,
                             color: level.color,
-                            ranges: ranges
+                            ranges: self.ranges,
+                            onRangeTap: { range in
+                                self.store.send(.presentRangeDetail(level.name, range))
+                            }
                         )
                         .padding(.horizontal, 16)
                     }
@@ -50,6 +53,11 @@ struct HomeView: View {
                 .padding(.vertical, 16)
             }
             .background(Color.backgroundNormalAlternative)
+        }
+        .navigationDestination(
+            item: self.$store.scope(state: \.rangeDetail, action: \.rangeDetail)
+        ) { store in
+            RangeDetailView(store: store).navigationBarHidden(true)
         }
     }
 }

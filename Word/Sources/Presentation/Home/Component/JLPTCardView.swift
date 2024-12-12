@@ -15,11 +15,18 @@ struct JLPTCardView: View {
     private let levelName: String
     private let color: Color
     private let ranges: [String]
+    private let onRangeTap: (String) -> Void
     
-    init(levelName: String, color: Color, ranges: [String]) {
+    init(
+        levelName: String,
+        color: Color,
+        ranges: [String],
+        onRangeTap: @escaping (String) -> Void
+    ) {
         self.levelName = levelName
         self.color = color
         self.ranges = ranges
+        self.onRangeTap = onRangeTap
     }
     
     var body: some View {
@@ -34,20 +41,24 @@ struct JLPTCardView: View {
             
             VStack(spacing: 8) {
                 ForEach(self.ranges, id: \.self) { range in
-                    HStack {
-                        Text(range)
-                            .font(.pretendard(size: 18, weight: .medium))
-                            .foregroundColor(Color.labelNormal)
-                        
-                        Spacer()
-                        
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(Color.labelAssistive)
+                    Button(action: {
+                        self.onRangeTap(range)
+                    }) {
+                        HStack {
+                            Text(range)
+                                .font(.pretendard(size: 18, weight: .medium))
+                                .foregroundColor(Color.labelNormal)
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(Color.labelAssistive)
+                        }
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(color: Color.shadowNormal, radius: 2, x: 0, y: 1)
                     }
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(color: Color.shadowNormal, radius: 2, x: 0, y: 1)
                 }
             }
             .padding(.horizontal, 8)

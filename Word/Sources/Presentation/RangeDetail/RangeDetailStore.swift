@@ -26,7 +26,10 @@ struct RangeDetailStore: Reducer {
     
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
+        case dismiss
     }
+    
+    @Dependency(\.dismiss) private var dismiss
     
     var body: some ReducerOf<Self> {
         BindingReducer()
@@ -35,6 +38,8 @@ struct RangeDetailStore: Reducer {
             switch action {
             case .binding:
                 return .none
+            case .dismiss:
+                return .run { _ in await self.dismiss() }
             }
         }
     }
