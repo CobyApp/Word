@@ -9,14 +9,19 @@
 import SwiftUI
 
 import CobyDS
+import ComposableArchitecture
 
 struct RangeDetailView: View {
-    let level: String
-    let range: String
+    
+    @Bindable private var store: StoreOf<RangeDetailStore>
+    
+    init(store: StoreOf<RangeDetailStore>) {
+        self.store = store
+    }
     
     var body: some View {
         VStack {
-            Text("\(level) - \(range)")
+            Text("\(self.store.level) - \(self.store.range)")
                 .font(.system(size: 32, weight: .bold, design: .default))
                 .padding(.top, 40)
             Spacer()

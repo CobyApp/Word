@@ -34,25 +34,20 @@ struct JLPTCardView: View {
             
             VStack(spacing: 8) {
                 ForEach(self.ranges, id: \.self) { range in
-                    NavigationLink(destination: RangeDetailView(
-                        level: self.levelName,
-                        range: range
-                    )) {
-                        HStack {
-                            Text(range)
-                                .font(.pretendard(size: 18, weight: .medium))
-                                .foregroundColor(Color.labelNormal)
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(Color.labelAssistive)
-                        }
-                        .padding()
-                        .background(Color.white)
-                        .cornerRadius(10)
-                        .shadow(color: Color.shadowNormal, radius: 2, x: 0, y: 1)
+                    HStack {
+                        Text(range)
+                            .font(.pretendard(size: 18, weight: .medium))
+                            .foregroundColor(Color.labelNormal)
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(Color.labelAssistive)
                     }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(color: Color.shadowNormal, radius: 2, x: 0, y: 1)
                 }
             }
             .padding(.horizontal, 8)
