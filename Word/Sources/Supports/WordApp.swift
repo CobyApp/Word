@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 import CobyDS
 
@@ -8,6 +9,7 @@ struct WordApp: App {
         WindowGroup {
             ContentView()
                 .loadCustomFonts()
+                .modelContainer(for: Word.self)
         }
     }
 }

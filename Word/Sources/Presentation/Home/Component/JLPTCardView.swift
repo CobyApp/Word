@@ -15,13 +15,13 @@ struct JLPTCardView: View {
     private let levelName: String
     private let color: Color
     private let ranges: [String]
-    private let onRangeTap: (String) -> Void
+    private let onRangeTap: (Int) -> Void
     
     init(
         levelName: String,
         color: Color,
         ranges: [String],
-        onRangeTap: @escaping (String) -> Void
+        onRangeTap: @escaping (Int) -> Void
     ) {
         self.levelName = levelName
         self.color = color
@@ -31,7 +31,6 @@ struct JLPTCardView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            
             Text(self.levelName)
                 .font(.pretendard(size: 24, weight: .bold))
                 .padding()
@@ -40,9 +39,9 @@ struct JLPTCardView: View {
                 .background(self.color)
             
             VStack(spacing: 8) {
-                ForEach(self.ranges, id: \.self) { range in
+                ForEach(Array(self.ranges.enumerated()), id: \.offset) { index, range in
                     Button(action: {
-                        self.onRangeTap(range)
+                        self.onRangeTap(index)
                     }) {
                         HStack {
                             Text(range)
@@ -51,7 +50,9 @@ struct JLPTCardView: View {
                             
                             Spacer()
                             
-                            Image(systemName: "chevron.right")
+                            Image(uiImage: UIImage.icForward)
+                                .resizable()
+                                .frame(width: 16, height: 16)
                                 .foregroundColor(Color.labelAssistive)
                         }
                         .padding()

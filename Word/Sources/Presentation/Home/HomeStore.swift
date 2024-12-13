@@ -21,7 +21,7 @@ struct HomeStore: Reducer {
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case rangeDetail(PresentationAction<RangeDetailStore.Action>)
-        case presentRangeDetail(String, String)
+        case presentRangeDetail(String, Int)
     }
     
     var body: some ReducerOf<Self> {

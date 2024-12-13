@@ -19,12 +19,6 @@ struct HomeView: View {
         self.store = store
     }
     
-    private let jlptLevels: [(name: String, color: Color)] = [
-        ("JLPT N3", Color.green40),
-        ("JLPT N2", Color.blue40),
-        ("JLPT N1", Color.red40)
-    ]
-    
     private let ranges: [String] = [
         "Stage 1", "Stage 2", "Stage 3", "Stage 4", "Stage 5"
     ]
@@ -38,19 +32,19 @@ struct HomeView: View {
             
             ScrollView {
                 VStack(spacing: 20) {
-                    ForEach(jlptLevels, id: \.name) { level in
+                    ForEach(WordLevel.allCases, id: \.self) { level in
                         JLPTCardView(
-                            levelName: level.name,
+                            levelName: level.title,
                             color: level.color,
                             ranges: self.ranges,
                             onRangeTap: { range in
-                                self.store.send(.presentRangeDetail(level.name, range))
+                                self.store.send(.presentRangeDetail(level.rawValue, range))
                             }
                         )
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, BaseSize.horizantalPadding)
                     }
                 }
-                .padding(.vertical, 16)
+                .padding(.vertical, BaseSize.verticalPadding)
             }
             .background(Color.backgroundNormalAlternative)
         }
