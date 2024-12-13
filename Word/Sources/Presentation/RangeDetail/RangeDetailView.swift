@@ -35,12 +35,31 @@ struct RangeDetailView: View {
                 }
                 .padding(.vertical, BaseSize.verticalPadding)
             }
-            .background(Color.backgroundNormalAlternative)
+            
+            Button(action: {
+                self.store.send(.presentQuiz(self.store.level, self.store.range))
+            }) {
+                Text("퀴즈 시작")
+                    .font(.pretendard(size: 16, weight: .bold))
+                    .foregroundColor(Color.staticWhite)
+                    .padding(.vertical, 14)
+                    .frame(maxWidth: .infinity)
+                    .background(WordLevel(rawValue: self.store.level)?.color ?? Color.blue40)
+                    .cornerRadius(12)
+                    .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+            }
+            .padding(.horizontal, BaseSize.horizantalPadding)
+            .padding(.top, 8)
+            .padding(.bottom, BaseSize.verticalPadding)
         }
+        .background(Color.backgroundNormalAlternative)
         .onAppear {
             self.store.send(.fetchByLevelAndRange(self.store.level, self.store.range))
         }
+        .navigationDestination(
+            item: self.$store.scope(state: \.quiz, action: \.quiz)
+        ) { store in
+            QuizView(store: store).navigationBarHidden(true)
+        }
     }
 }
-
-

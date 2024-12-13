@@ -46,8 +46,8 @@ struct HomeView: View {
                 }
                 .padding(.vertical, BaseSize.verticalPadding)
             }
-            .background(Color.backgroundNormalAlternative)
         }
+        .background(Color.backgroundNormalAlternative)
         .navigationDestination(
             item: self.$store.scope(state: \.rangeDetail, action: \.rangeDetail)
         ) { store in

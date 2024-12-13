@@ -11,6 +11,7 @@ import SwiftUI
 import CobyDS
 
 enum WordLevel: String, CaseIterable {
+    
     case n1 = "n1"
     case n2 = "n2"
     case n3 = "n3"
