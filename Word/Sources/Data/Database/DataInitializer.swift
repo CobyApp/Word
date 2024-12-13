@@ -30,7 +30,7 @@ class DataInitializer {
                 
                 for wordDTO in words {
                     let word = Word(
-                        id: wordDTO.id,
+                        number: wordDTO.id,
                         kanji: wordDTO.kanji,
                         hiragana: wordDTO.hiragana,
                         meaning: wordDTO.meaning,
@@ -38,6 +38,9 @@ class DataInitializer {
                     )
                     context.insert(word)
                 }
+                
+                try context.save()
+                print("Data saved for level: \(level)")
             } catch {
                 print("Error decoding JSON for level \(level): \(error)")
             }
@@ -48,13 +51,11 @@ class DataInitializer {
         print("Data successfully initialized")
     }
     
-    // JSON 파일 로드 함수
     private static func loadJSONData(for level: WordLevel) -> Data? {
         guard let fileURL = Bundle.main.url(forResource: level.fileName, withExtension: "json") else {
             print("JSON file for \(level.fileName) not found")
             return nil
         }
-        
         return try? Data(contentsOf: fileURL)
     }
 }

@@ -53,8 +53,8 @@ extension WordDatabase: DependencyKey {
             let modelContext = try context()
             let descriptor = FetchDescriptor<Word>(predicate: #Predicate {
                 $0.level == level &&
-                $0.id >= start &&
-                $0.id <= end
+                $0.number >= start &&
+                $0.number <= end
             })
             return try modelContext.fetch(descriptor)
         }

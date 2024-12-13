@@ -17,13 +17,16 @@ extension DependencyValues {
     }
 }
 
-fileprivate let appContext: ModelContext = {
+fileprivate let sharedContainer: ModelContainer = {
     do {
-        let container = try ModelContainer(for: Word.self)
-        return ModelContext(container)
+        return try ModelContainer(for: Word.self)
     } catch {
-        fatalError("Failed to create container.")
+        fatalError("Failed to create shared container.")
     }
+}()
+
+let sharedContext: ModelContext = {
+    return ModelContext(sharedContainer)
 }()
 
 struct Database {
@@ -32,7 +35,7 @@ struct Database {
 
 extension Database: DependencyKey {
     public static let liveValue = Self(
-        context: { appContext }
+        context: { sharedContext }
     )
 }
 
