@@ -60,7 +60,6 @@ struct RangeDetailStore: Reducer {
                 }
             case let .fetchByLevelAndRangeResponse(.success(words)):
                 state.words = words
-                print(words)
                 return .none
             case let .fetchByLevelAndRangeResponse(.failure(error)):
                 print(error.localizedDescription)

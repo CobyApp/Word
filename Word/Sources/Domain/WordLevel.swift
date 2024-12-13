@@ -30,9 +30,9 @@ enum WordLevel: String, CaseIterable {
     
     var color: Color {
         switch self {
-        case .n1: return Color.green40
+        case .n1: return Color.red40
         case .n2: return Color.blue40
-        case .n3: return Color.red40
+        case .n3: return Color.green40
         }
     }
 }

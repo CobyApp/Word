@@ -18,6 +18,13 @@ struct QuizStore: Reducer {
         let level: String
         let range: Int
         var words: [Word] = []
+        var currentWordIndex: Int = 0
+        var currentWord: Word? {
+            guard !words.isEmpty, currentWordIndex >= 0, currentWordIndex < words.count else {
+                return nil
+            }
+            return words[currentWordIndex]
+        }
         
         init(level: String, range: Int) {
             self.level = level
@@ -29,6 +36,8 @@ struct QuizStore: Reducer {
         case binding(BindingAction<State>)
         case fetchByLevelAndRange(String, Int)
         case fetchByLevelAndRangeResponse(TaskResult<[Word]>)
+        case previousWord
+        case nextWord
         case dismiss
     }
     
@@ -51,10 +60,20 @@ struct QuizStore: Reducer {
                 }
             case let .fetchByLevelAndRangeResponse(.success(words)):
                 state.words = words
-                print(words)
+                state.currentWordIndex = 0
                 return .none
             case let .fetchByLevelAndRangeResponse(.failure(error)):
-                print(error.localizedDescription)
+                print("Error fetching words: \(error.localizedDescription)")
+                return .none
+            case .previousWord:
+                if state.currentWordIndex > 0 {
+                    state.currentWordIndex -= 1
+                }
+                return .none
+            case .nextWord:
+                if state.currentWordIndex < state.words.count - 1 {
+                    state.currentWordIndex += 1
+                }
                 return .none
             case .dismiss:
                 return .run { _ in await self.dismiss() }

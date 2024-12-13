@@ -26,15 +26,41 @@ struct QuizView: View {
                 title: "Stage \(self.store.range + 1)"
             )
             
-            ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(self.store.words, id: \.id) { word in
-                        WordRowView(word: word)
-                            .padding(.horizontal, BaseSize.horizantalPadding)
-                    }
-                }
-                .padding(.vertical, BaseSize.verticalPadding)
+            Spacer()
+            
+            // Flashcard View
+            if let word = store.currentWord {
+                FlashCardView(word: word)
+                    .padding()
+            } else {
+                Text("No words available")
+                    .font(.pretendard(size: 16, weight: .bold))
+                    .foregroundColor(.secondary)
             }
+            
+            Spacer()
+            
+            // Navigation Buttons
+            HStack {
+                Button(action: { self.store.send(.previousWord) }) {
+                    Text("이전")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.accentColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                }
+                
+                Button(action: { self.store.send(.nextWord) }) {
+                    Text("다음")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.accentColor)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                }
+            }
+            .padding(.horizontal)
         }
         .background(Color.backgroundNormalAlternative)
         .onAppear {
