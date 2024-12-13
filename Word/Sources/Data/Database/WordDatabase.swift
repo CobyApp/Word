@@ -33,13 +33,18 @@ extension WordDatabase: DependencyKey {
         fetchAll: {
             @Dependency(\.databaseService.context) var context
             let modelContext = try context()
-            let descriptor = FetchDescriptor<Word>(sortBy: [SortDescriptor(\.id)])
+            let descriptor = FetchDescriptor<Word>(
+                sortBy: [SortDescriptor(\.number, order: .forward)]
+            )
             return try modelContext.fetch(descriptor)
         },
         fetchByLevel: { level in
             @Dependency(\.databaseService.context) var context
             let modelContext = try context()
-            let descriptor = FetchDescriptor<Word>(predicate: #Predicate { $0.level == level })
+            let descriptor = FetchDescriptor<Word>(
+                predicate: #Predicate { $0.level == level },
+                sortBy: [SortDescriptor(\.number, order: .forward)]
+            )
             return try modelContext.fetch(descriptor)
         },
         fetchByLevelAndRange: { level, index in
@@ -51,11 +56,14 @@ extension WordDatabase: DependencyKey {
             
             @Dependency(\.databaseService.context) var context
             let modelContext = try context()
-            let descriptor = FetchDescriptor<Word>(predicate: #Predicate {
-                $0.level == level &&
-                $0.number >= start &&
-                $0.number <= end
-            })
+            let descriptor = FetchDescriptor<Word>(
+                predicate: #Predicate {
+                    $0.level == level &&
+                    $0.number >= start &&
+                    $0.number <= end
+                },
+                sortBy: [SortDescriptor(\.number, order: .forward)]
+            )
             return try modelContext.fetch(descriptor)
         }
     )

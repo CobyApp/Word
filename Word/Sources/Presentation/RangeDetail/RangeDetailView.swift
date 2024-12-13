@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import SwiftData
 
 import CobyDS
 import ComposableArchitecture
@@ -22,17 +21,19 @@ struct RangeDetailView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Top Bar
             TopBarView(
                 leftAction: { self.store.send(.dismiss) },
                 title: "Stage \(self.store.range + 1)"
             )
             
-            // Word List
             ScrollView {
-                LazyVStack(spacing: 8) {
+                LazyVStack(spacing: 12) {
+                    ForEach(self.store.words, id: \.id) { word in
+                        WordRowView(word: word)
+                            .padding(.horizontal, BaseSize.horizantalPadding)
+                    }
                 }
-                .padding(.horizontal, 16)
+                .padding(.vertical, BaseSize.verticalPadding)
             }
             .background(Color.backgroundNormalAlternative)
         }
@@ -42,21 +43,4 @@ struct RangeDetailView: View {
     }
 }
 
-struct WordRow: View {
-    let word: Word
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(word.kanji)
-                .font(.pretendard(size: 18, weight: .bold))
-                .foregroundColor(.primary)
-            Text("\(word.hiragana) - \(word.meaning)")
-                .font(.pretendard(size: 14, weight: .medium))
-                .foregroundColor(.secondary)
-        }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(8)
-        .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 1)
-    }
-}
+

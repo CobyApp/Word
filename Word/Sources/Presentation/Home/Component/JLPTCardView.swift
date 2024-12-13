@@ -62,8 +62,8 @@ struct JLPTCardView: View {
                     }
                 }
             }
-            .padding(.horizontal, 8)
-            .padding(.bottom, 12)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
         }
         .background(Color.backgroundNormalNormal)
         .clipShape(RoundedRectangle(cornerRadius: 16))
