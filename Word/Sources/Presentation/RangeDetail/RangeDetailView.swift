@@ -42,7 +42,7 @@ struct RangeDetailView: View {
                 Text("퀴즈 시작")
                     .font(.pretendard(size: 16, weight: .bold))
                     .foregroundColor(Color.staticWhite)
-                    .padding(.vertical, 14)
+                    .padding(.vertical, 16)
                     .frame(maxWidth: .infinity)
                     .background(WordLevel(rawValue: self.store.level)?.color ?? Color.blue40)
                     .cornerRadius(12)

@@ -35,7 +35,7 @@ struct JLPTCardView: View {
                 .font(.pretendard(size: 24, weight: .bold))
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .foregroundColor(Color.staticWhite)
+                .foregroundColor(Color.inverseLabel)
                 .background(self.color)
             
             VStack(spacing: 8) {
@@ -66,7 +66,7 @@ struct JLPTCardView: View {
             .padding(.bottom, 16)
         }
         .background(Color.backgroundNormalNormal)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .cornerRadius(16)
         .shadow(color: Color.shadowStrong, radius: 4, x: 0, y: 2)
     }
 }

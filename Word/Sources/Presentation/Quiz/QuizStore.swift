@@ -20,15 +20,24 @@ struct QuizStore: Reducer {
         let level: String
         let range: Int
         var words: [Word] = []
+        var initialWordCount: Int = 0 // 초기 단어 수 저장
         var currentWordIndex: Int = 0
         var forgottenWordCounts: [UUID: Int] = [:] // 단어별 '모르겠음' 선택 횟수
         var rememberedWords: Set<UUID> = [] // '외웠음' 선택된 단어 ID 집합
         
+        // 현재 단어
         var currentWord: Word? {
             guard !words.isEmpty, currentWordIndex >= 0, currentWordIndex < words.count else {
                 return nil
             }
             return words[currentWordIndex]
+        }
+        
+        // 진행 상황 비율 (0.0 ~ 1.0)
+        var progress: Double {
+            guard initialWordCount > 0 else { return 0.0 }
+            let completedWords = rememberedWords.count
+            return Double(completedWords) / Double(initialWordCount)
         }
         
         init(level: String, range: Int) {
@@ -76,6 +85,7 @@ struct QuizStore: Reducer {
                 
             case let .fetchByLevelAndRangeResponse(.success(words)):
                 state.words = words
+                state.initialWordCount = words.count // 초기 단어 수 저장
                 state.currentWordIndex = 0
                 state.forgottenWordCounts = [:]
                 state.rememberedWords = []
@@ -96,8 +106,6 @@ struct QuizStore: Reducer {
                 if let currentWord = state.currentWord {
                     // '외웠음' 선택된 단어를 기억된 집합에 추가
                     state.rememberedWords.insert(currentWord.id)
-                    // '모르겠음' 카운트 제거
-                    state.forgottenWordCounts[currentWord.id] = nil
                 }
                 return self.moveToNextWord(state: &state)
                 
@@ -111,27 +119,30 @@ struct QuizStore: Reducer {
     }
     
     private func moveToNextWord(state: inout State) -> Effect<Action> {
-        // 다음 단어로 이동
+        // 현재 단어 인덱스를 증가
         state.currentWordIndex += 1
-        
+
         // 모든 단어가 끝난 경우
         if state.currentWordIndex >= state.words.count {
-            if state.forgottenWordCounts.isEmpty {
-                // '모두 외웠음' 상태 -> 상위 10개의 '모르겠음' 단어 추출 및 화면 전환
+            if state.rememberedWords.count >= state.words.count - 1 {
+                // '모르겠음' 단어가 없으면 가장 많이 몰랐던 단어 상위 10개 추출
                 let mostForgottenWords = state.forgottenWordCounts
                     .sorted { $0.value > $1.value }
                     .prefix(10)
-                    .compactMap { id, _ in state.words.first { $0.id == id } }
-                
+                    .compactMap { id, _ in state.words.first(where: { $0.id == id }) }
+
+                print("All forgotten words learned. Navigating to final.")
                 return .send(.navigateToFinal(mostForgottenWords))
             } else {
-                // 사이클 반복, 잊은 단어만 다시 학습
-                state.words = state.words.filter { state.forgottenWordCounts[$0.id, default: 0] > 0 }
-                state.currentWordIndex = 0
+                // 잊은 단어로 사이클 반복
                 print("Restarting cycle with forgotten words.")
+                state.words = state.words.filter {
+                    !state.rememberedWords.contains($0.id)
+                }
+                state.currentWordIndex = 0
             }
         }
-        
+
         return .none
     }
 }

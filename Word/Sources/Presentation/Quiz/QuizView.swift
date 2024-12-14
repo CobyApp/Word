@@ -21,14 +21,22 @@ struct QuizView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            // 상단 타이틀
             TopBarView(
                 leftAction: { self.store.send(.dismiss) },
                 title: "퀴즈"
             )
             
+            // 상단 진행 상황 막대
+            ProgressBarView(
+                progress: self.store.progress,
+                backgroundColor: Color.coolNeutral95,
+                foregroundColor: WordLevel(rawValue: self.store.level)?.color ?? Color.blue40
+            )
+            
             Spacer()
             
-            // Flashcard View
+            // 플래시카드 뷰
             if let word = store.currentWord {
                 FlashCardView(word: word)
                     .padding()
@@ -40,9 +48,9 @@ struct QuizView: View {
             
             Spacer()
             
-            // Buttons
+            // 버튼
             HStack {
-                // 모르겠음 버튼
+                // '모르겠음' 버튼
                 Button(action: { self.store.send(.didNotRemember) }) {
                     Text("모르겠음")
                         .padding()
@@ -52,7 +60,7 @@ struct QuizView: View {
                         .cornerRadius(12)
                 }
                 
-                // 외웠음 버튼
+                // '외웠음' 버튼
                 Button(action: { self.store.send(.didRemember) }) {
                     Text("외웠음")
                         .padding()
@@ -62,7 +70,9 @@ struct QuizView: View {
                         .cornerRadius(12)
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, BaseSize.horizantalPadding)
+            .padding(.top, 8)
+            .padding(.bottom, BaseSize.verticalPadding)
         }
         .background(Color.backgroundNormalAlternative)
         .onAppear {

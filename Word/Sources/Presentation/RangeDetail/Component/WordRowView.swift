@@ -47,7 +47,7 @@ struct WordRowView: View {
         }
         .padding(16)
         .background(Color.backgroundNormalNormal)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .cornerRadius(12)
         .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
     }
 }
