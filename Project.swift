@@ -49,7 +49,8 @@ private func createInfoPlist() -> InfoPlist {
         "CFBundleShortVersionString": "\(version)",
         "CFBundleVersion": "\(bundleVersion)",
         "UIMainStoryboardFile": "",
-        "UILaunchStoryboardName": "LaunchScreen"
+        "UILaunchStoryboardName": "LaunchScreen",
+        "CFBundleDisplayName": "단어백선생"
     ]
     return .extendingDefault(with: plist)
 }
