@@ -38,7 +38,7 @@ struct HomeView: View {
                             color: level.color,
                             ranges: self.ranges,
                             onRangeTap: { range in
-                                self.store.send(.presentRangeDetail(level.rawValue, range))
+                                self.store.send(.navigateToRangeDetail(level.rawValue, range))
                             }
                         )
                         .padding(.horizontal, BaseSize.horizantalPadding)

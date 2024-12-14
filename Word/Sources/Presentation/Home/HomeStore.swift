@@ -21,7 +21,7 @@ struct HomeStore: Reducer {
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case rangeDetail(PresentationAction<RangeDetailStore.Action>)
-        case presentRangeDetail(String, Int)
+        case navigateToRangeDetail(String, Int)
     }
     
     var body: some ReducerOf<Self> {
@@ -31,9 +31,11 @@ struct HomeStore: Reducer {
             switch action {
             case .binding:
                 return .none
+                
             case .rangeDetail:
                 return .none
-            case .presentRangeDetail(let level, let range):
+                
+            case .navigateToRangeDetail(let level, let range):
                 state.rangeDetail = RangeDetailStore.State(level: level, range: range)
                 return .none
             }

@@ -23,7 +23,7 @@ struct QuizView: View {
         VStack(spacing: 0) {
             TopBarView(
                 leftAction: { self.store.send(.dismiss) },
-                title: "Stage \(self.store.range + 1)"
+                title: "퀴즈"
             )
             
             Spacer()
@@ -40,22 +40,24 @@ struct QuizView: View {
             
             Spacer()
             
-            // Navigation Buttons
+            // Buttons
             HStack {
-                Button(action: { self.store.send(.previousWord) }) {
-                    Text("이전")
+                // 모르겠음 버튼
+                Button(action: { self.store.send(.didNotRemember) }) {
+                    Text("모르겠음")
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.accentColor)
+                        .background(Color.red.opacity(0.8))
                         .foregroundColor(.white)
                         .cornerRadius(12)
                 }
                 
-                Button(action: { self.store.send(.nextWord) }) {
-                    Text("다음")
+                // 외웠음 버튼
+                Button(action: { self.store.send(.didRemember) }) {
+                    Text("외웠음")
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(Color.accentColor)
+                        .background(Color.green.opacity(0.8))
                         .foregroundColor(.white)
                         .cornerRadius(12)
                 }
@@ -65,6 +67,11 @@ struct QuizView: View {
         .background(Color.backgroundNormalAlternative)
         .onAppear {
             self.store.send(.fetchByLevelAndRange(self.store.level, self.store.range))
+        }
+        .navigationDestination(
+            item: self.$store.scope(state: \.final, action: \.final)
+        ) { store in
+            FinalView(store: store).navigationBarHidden(true)
         }
     }
 }

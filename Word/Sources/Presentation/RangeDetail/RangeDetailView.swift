@@ -37,7 +37,7 @@ struct RangeDetailView: View {
             }
             
             Button(action: {
-                self.store.send(.presentQuiz(self.store.level, self.store.range))
+                self.store.send(.navigateToQuiz(self.store.level, self.store.range))
             }) {
                 Text("퀴즈 시작")
                     .font(.pretendard(size: 16, weight: .bold))

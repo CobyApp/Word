@@ -32,7 +32,7 @@ struct RangeDetailStore: Reducer {
         case fetchByLevelAndRange(String, Int)
         case fetchByLevelAndRangeResponse(TaskResult<[Word]>)
         case quiz(PresentationAction<QuizStore.Action>)
-        case presentQuiz(String, Int)
+        case navigateToQuiz(String, Int)
         case dismiss
     }
     
@@ -46,11 +46,14 @@ struct RangeDetailStore: Reducer {
             switch action {
             case .binding:
                 return .none
+                
             case .quiz:
                 return .none
-            case .presentQuiz(let level, let range):
+                
+            case .navigateToQuiz(let level, let range):
                 state.quiz = QuizStore.State(level: level, range: range)
                 return .none
+                
             case .fetchByLevelAndRange(let level, let range):
                 return .run { send in
                     let result = await TaskResult {
@@ -58,12 +61,15 @@ struct RangeDetailStore: Reducer {
                     }
                     await send(.fetchByLevelAndRangeResponse(result))
                 }
+                
             case let .fetchByLevelAndRangeResponse(.success(words)):
                 state.words = words
                 return .none
+                
             case let .fetchByLevelAndRangeResponse(.failure(error)):
                 print(error.localizedDescription)
                 return .none
+                
             case .dismiss:
                 return .run { _ in await self.dismiss() }
             }
