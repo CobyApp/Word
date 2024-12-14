@@ -11,13 +11,19 @@ import SwiftUI
 import CobyDS
 
 struct FlashCardView: View {
-
+    
     @State private var isFlipped: Bool = false
+    @State private var dragOffset: CGSize = .zero // 드래그 상태 추적
+    @State private var isVisible: Bool = true // 카드 가시성 추적
     
     private let word: Word
+    private let onRemembered: () -> Void // 외웠음
+    private let onForgotten: () -> Void // 모르겠음
     
-    init(word: Word) {
+    init(word: Word, onRemembered: @escaping () -> Void, onForgotten: @escaping () -> Void) {
         self.word = word
+        self.onRemembered = onRemembered
+        self.onForgotten = onForgotten
     }
 
     var body: some View {
@@ -40,6 +46,9 @@ struct FlashCardView: View {
                 .opacity(self.isFlipped ? 1 : 0)
                 .zIndex(self.isFlipped ? 1 : 0)
         }
+        .offset(x: self.dragOffset.width, y: 0) // y는 고정
+        .gesture(self.dragGesture) // 스와이프 제스처 적용
+        .animation(.spring(response: 0.5, dampingFraction: 0.75, blendDuration: 0.1), value: self.dragOffset)
         .animation(.interactiveSpring(response: 0.5, dampingFraction: 0.75, blendDuration: 0.1), value: self.isFlipped)
         .onTapGesture {
             self.flipCard()
@@ -95,10 +104,51 @@ struct FlashCardView: View {
         .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
     }
     
+    // Drag gesture
+    private var dragGesture: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                // y 축을 고정하고 x 축만 추적
+                self.dragOffset = CGSize(width: value.translation.width, height: 0)
+            }
+            .onEnded { value in
+                if value.translation.width > 100 {
+                    // 오른쪽으로 스와이프 → 외웠음
+                    self.swipeCard(to: .right)
+                    self.onRemembered()
+                } else if value.translation.width < -100 {
+                    // 왼쪽으로 스와이프 → 모르겠음
+                    self.swipeCard(to: .left)
+                    self.onForgotten()
+                } else {
+                    // 원래 위치로 복원
+                    self.dragOffset = .zero
+                }
+            }
+    }
+    
+    // 카드 스와이프 애니메이션
+    private func swipeCard(to direction: SwipeDirection) {
+        withAnimation {
+            switch direction {
+            case .left:
+                self.dragOffset = CGSize(width: -1000, height: 0) // 왼쪽으로 사라짐
+            case .right:
+                self.dragOffset = CGSize(width: 1000, height: 0) // 오른쪽으로 사라짐
+            }
+        }
+        
+        // 카드가 사라지고 새로운 카드 나타나기
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            self.resetCard()
+        }
+    }
+    
     // Reset card to front side
     private func resetCard() {
         withAnimation {
             self.isFlipped = false
+            self.dragOffset = .zero
         }
     }
     
@@ -108,4 +158,9 @@ struct FlashCardView: View {
             self.isFlipped.toggle()
         }
     }
+}
+
+// 스와이프 방향
+private enum SwipeDirection {
+    case left, right
 }

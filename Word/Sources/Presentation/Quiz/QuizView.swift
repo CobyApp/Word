@@ -38,8 +38,12 @@ struct QuizView: View {
             
             // 플래시카드 뷰
             if let word = store.currentWord {
-                FlashCardView(word: word)
-                    .padding()
+                FlashCardView(
+                    word: word,
+                    onRemembered: { self.store.send(.didRemember) },
+                    onForgotten: { self.store.send(.didNotRemember) }
+                )
+                .padding(.horizontal, BaseSize.horizantalPadding)
             } else {
                 Text("No words available")
                     .font(.pretendard(size: 16, weight: .bold))
