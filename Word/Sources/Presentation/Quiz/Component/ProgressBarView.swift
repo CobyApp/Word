@@ -36,8 +36,6 @@ struct ProgressBarView: View {
                     .cornerRadius(4)
             }
         }
-        .frame(height: 20) // 일정한 높이 지정
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
+        .frame(height: 20)
     }
 }

@@ -41,12 +41,12 @@ struct RangeDetailView: View {
             }) {
                 Text("퀴즈 시작")
                     .font(.pretendard(size: 16, weight: .bold))
-                    .foregroundColor(Color.staticWhite)
+                    .foregroundColor(Color.inverseLabel)
                     .padding(.vertical, 16)
                     .frame(maxWidth: .infinity)
                     .background(WordLevel(rawValue: self.store.level)?.color ?? Color.blue40)
                     .cornerRadius(12)
-                    .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                    .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
             }
             .padding(.horizontal, BaseSize.horizantalPadding)
             .padding(.top, 8)

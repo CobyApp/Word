@@ -25,6 +25,7 @@ struct FinalStore: Reducer {
     enum Action: BindableAction, Equatable {
         case binding(BindingAction<State>)
         case dismiss
+        case retryQuiz
     }
     
     @Dependency(\.dismiss) private var dismiss
@@ -39,6 +40,9 @@ struct FinalStore: Reducer {
                 
             case .dismiss:
                 return .run { _ in await self.dismiss() }
+                
+            case .retryQuiz:
+                return .send(.dismiss)
             }
         }
     }

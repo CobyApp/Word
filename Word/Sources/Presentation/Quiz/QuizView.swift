@@ -33,6 +33,8 @@ struct QuizView: View {
                 backgroundColor: Color.coolNeutral95,
                 foregroundColor: WordLevel(rawValue: self.store.level)?.color ?? Color.blue40
             )
+            .padding(.horizontal, BaseSize.horizantalPadding)
+            .padding(.top, 16)
             
             Spacer()
             
@@ -52,26 +54,27 @@ struct QuizView: View {
             
             Spacer()
             
-            // 버튼
             HStack {
-                // '모르겠음' 버튼
                 Button(action: { self.store.send(.didNotRemember) }) {
                     Text("모르겠음")
-                        .padding()
+                        .font(.pretendard(size: 16, weight: .bold))
+                        .foregroundColor(Color.inverseLabel)
+                        .padding(.vertical, 16)
                         .frame(maxWidth: .infinity)
-                        .background(Color.red.opacity(0.8))
-                        .foregroundColor(.white)
+                        .background(Color.red60)
                         .cornerRadius(12)
+                        .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
                 }
                 
-                // '외웠음' 버튼
                 Button(action: { self.store.send(.didRemember) }) {
                     Text("외웠음")
-                        .padding()
+                        .font(.pretendard(size: 16, weight: .bold))
+                        .foregroundColor(Color.inverseLabel)
+                        .padding(.vertical, 16)
                         .frame(maxWidth: .infinity)
-                        .background(Color.green.opacity(0.8))
-                        .foregroundColor(.white)
+                        .background(Color.green60)
                         .cornerRadius(12)
+                        .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
                 }
             }
             .padding(.horizontal, BaseSize.horizantalPadding)
