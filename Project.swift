@@ -4,8 +4,8 @@ let projectName = "Word"
 let organizationName = "Coby"
 let bundleID = "com.coby.Word"
 let targetVersion = "17.0"
-let version = "1.0.0"
-let bundleVersion = "0"
+let version = "1.0.1"
+let bundleVersion = "1"
 
 // MARK: Struct
 let project = Project(
