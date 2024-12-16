@@ -56,7 +56,7 @@ struct JLPTCardView: View {
                                 .foregroundColor(Color.labelAssistive)
                         }
                         .padding()
-                        .background(Color.white)
+                        .background(Color.backgroundNormalNormal)
                         .cornerRadius(10)
                         .shadow(color: Color.shadowNormal, radius: 2, x: 0, y: 1)
                     }
