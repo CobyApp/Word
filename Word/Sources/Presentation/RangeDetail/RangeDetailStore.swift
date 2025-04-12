@@ -40,6 +40,7 @@ struct RangeDetailStore: Reducer {
                 return .none
                 
             case .fetchByLevelAndRange(let level, let range):
+                print("Fetching words for level: \(level), range: \(range)")
                 return .run { send in
                     let result = await TaskResult {
                         try self.wordContext.fetchByLevelAndRange(level, range)
@@ -48,11 +49,12 @@ struct RangeDetailStore: Reducer {
                 }
                 
             case let .fetchByLevelAndRangeResponse(.success(words)):
+                print("Successfully fetched \(words.count) words")
                 state.words = words
                 return .none
                 
             case let .fetchByLevelAndRangeResponse(.failure(error)):
-                print(error.localizedDescription)
+                print("Error fetching words: \(error.localizedDescription)")
                 return .none
                 
             case .dismiss:

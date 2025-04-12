@@ -19,9 +19,12 @@ extension DependencyValues {
 
 fileprivate let sharedContainer: ModelContainer = {
     do {
-        return try ModelContainer(for: Word.self)
+        let container = try ModelContainer(for: WordModel.self)
+        let context = ModelContext(container)
+        DataInitializer.initializeDataIfNeeded(context: context)
+        return container
     } catch {
-        fatalError("Failed to create shared container.")
+        fatalError("Failed to create shared container: \(error)")
     }
 }()
 

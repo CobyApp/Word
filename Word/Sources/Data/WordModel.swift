@@ -1,15 +1,9 @@
-//
-//  Word.swift
-//  Word
-//
-//  Created by Coby on 12/13/24.
-//  Copyright © 2024 Coby. All rights reserved.
-//
-
 import Foundation
+import SwiftData
 
-struct Word: Identifiable, Equatable {
-    let id: UUID
+@Model
+class WordModel {
+    @Attribute(.unique) var id: UUID
     var number: String
     var kanji: String
     var hiragana: String
@@ -17,7 +11,7 @@ struct Word: Identifiable, Equatable {
     var level: String
     
     init(
-        id: UUID = UUID(),
+        id: UUID,
         number: String,
         kanji: String,
         hiragana: String,
@@ -31,4 +25,15 @@ struct Word: Identifiable, Equatable {
         self.meaning = meaning
         self.level = level
     }
-}
+    
+    var domain: Word {
+        Word(
+            id: id,
+            number: number,
+            kanji: kanji,
+            hiragana: hiragana,
+            meaning: meaning,
+            level: level
+        )
+    }
+} 
