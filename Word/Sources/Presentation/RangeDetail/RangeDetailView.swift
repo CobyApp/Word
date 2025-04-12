@@ -53,13 +53,9 @@ struct RangeDetailView: View {
             .padding(.bottom, BaseSize.verticalPadding)
         }
         .background(Color.backgroundNormalAlternative)
+        .navigationBarHidden(true)
         .onAppear {
             self.store.send(.fetchByLevelAndRange(self.store.level, self.store.range))
-        }
-        .navigationDestination(
-            item: self.$store.scope(state: \.quiz, action: \.quiz)
-        ) { store in
-            QuizView(store: store).navigationBarHidden(true)
         }
     }
 }

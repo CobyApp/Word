@@ -7,16 +7,12 @@
 //
 
 import Foundation
-
 import ComposableArchitecture
 
 @Reducer
 struct RangeDetailStore: Reducer {
-    
     @ObservableState
     struct State: Equatable {
-        @Presents var quiz: QuizStore.State?
-        
         let level: String
         let range: Int
         var words: [Word] = []
@@ -27,11 +23,9 @@ struct RangeDetailStore: Reducer {
         }
     }
     
-    enum Action: BindableAction, Equatable {
-        case binding(BindingAction<State>)
+    enum Action: Equatable {
         case fetchByLevelAndRange(String, Int)
         case fetchByLevelAndRangeResponse(TaskResult<[Word]>)
-        case quiz(PresentationAction<QuizStore.Action>)
         case navigateToQuiz(String, Int)
         case dismiss
     }
@@ -40,18 +34,9 @@ struct RangeDetailStore: Reducer {
     @Dependency(\.wordData) private var wordContext
     
     var body: some ReducerOf<Self> {
-        BindingReducer()
-        
         Reduce { state, action in
             switch action {
-            case .binding:
-                return .none
-                
-            case .quiz:
-                return .none
-                
-            case .navigateToQuiz(let level, let range):
-                state.quiz = QuizStore.State(level: level, range: range)
+            case .navigateToQuiz:
                 return .none
                 
             case .fetchByLevelAndRange(let level, let range):
@@ -73,9 +58,6 @@ struct RangeDetailStore: Reducer {
             case .dismiss:
                 return .run { _ in await self.dismiss() }
             }
-        }
-        .ifLet(\.$quiz, action: \.quiz) {
-            QuizStore()
         }
     }
 }

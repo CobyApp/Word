@@ -22,6 +22,6 @@ let package = Package(
     name: "Word",
     dependencies: [
         .package(url: "https://github.com/CobyLibrary/CobyDS.git", from: "1.7.2"),
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.16.1")
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.19.0")
     ]
 )

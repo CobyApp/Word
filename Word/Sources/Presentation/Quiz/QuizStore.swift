@@ -15,8 +15,6 @@ struct QuizStore: Reducer {
     
     @ObservableState
     struct State: Equatable {
-        @Presents var final: FinalStore.State?
-        
         let level: String
         let range: Int
         var words: [Word] = []
@@ -46,9 +44,7 @@ struct QuizStore: Reducer {
         }
     }
     
-    enum Action: BindableAction, Equatable {
-        case binding(BindingAction<State>)
-        case final(PresentationAction<FinalStore.Action>)
+    enum Action: Equatable {
         case navigateToFinal([Word])
         case fetchByLevelAndRange(String, Int)
         case fetchByLevelAndRangeResponse(TaskResult<[Word]>)
@@ -61,18 +57,9 @@ struct QuizStore: Reducer {
     @Dependency(\.wordData) private var wordContext
     
     var body: some ReducerOf<Self> {
-        BindingReducer()
-        
         Reduce { state, action in
             switch action {
-            case .binding:
-                return .none
-                
-            case .final:
-                return .none
-                
-            case .navigateToFinal(let words):
-                state.final = FinalStore.State(words: words)
+            case .navigateToFinal:
                 return .none
                 
             case .fetchByLevelAndRange(let level, let range):
@@ -113,9 +100,6 @@ struct QuizStore: Reducer {
                 return .run { _ in await self.dismiss() }
             }
         }
-        .ifLet(\.$final, action: \.final) {
-            FinalStore()
-        }
     }
     
     private func moveToNextWord(state: inout State) -> Effect<Action> {
@@ -131,11 +115,9 @@ struct QuizStore: Reducer {
                     .prefix(10)
                     .compactMap { id, _ in state.words.first(where: { $0.id == id }) }
 
-                print("All forgotten words learned. Navigating to final.")
                 return .send(.navigateToFinal(mostForgottenWords))
             } else {
                 // 잊은 단어로 사이클 반복
-                print("Restarting cycle with forgotten words.")
                 state.words = state.words.filter {
                     !state.rememberedWords.contains($0.id)
                 }

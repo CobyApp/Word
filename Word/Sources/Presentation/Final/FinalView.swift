@@ -53,5 +53,6 @@ struct FinalView: View {
             .padding(.bottom, BaseSize.verticalPadding)
         }
         .background(Color.backgroundNormalAlternative)
+        .navigationBarHidden(true)
     }
 }

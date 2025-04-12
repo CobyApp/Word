@@ -48,10 +48,5 @@ struct HomeView: View {
             }
         }
         .background(Color.backgroundNormalAlternative)
-        .navigationDestination(
-            item: self.$store.scope(state: \.rangeDetail, action: \.rangeDetail)
-        ) { store in
-            RangeDetailView(store: store).navigationBarHidden(true)
-        }
     }
 }

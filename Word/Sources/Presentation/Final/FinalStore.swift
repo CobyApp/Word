@@ -7,12 +7,10 @@
 //
 
 import Foundation
-
 import ComposableArchitecture
 
 @Reducer
 struct FinalStore: Reducer {
-    
     @ObservableState
     struct State: Equatable {
         var words: [Word] = []
@@ -22,27 +20,21 @@ struct FinalStore: Reducer {
         }
     }
     
-    enum Action: BindableAction, Equatable {
-        case binding(BindingAction<State>)
-        case dismiss
+    enum Action: Equatable {
         case retryQuiz
+        case dismiss
     }
     
     @Dependency(\.dismiss) private var dismiss
     
     var body: some ReducerOf<Self> {
-        BindingReducer()
-        
         Reduce { state, action in
             switch action {
-            case .binding:
-                return .none
+            case .retryQuiz:
+                return .send(.dismiss)
                 
             case .dismiss:
                 return .run { _ in await self.dismiss() }
-                
-            case .retryQuiz:
-                return .send(.dismiss)
             }
         }
     }
