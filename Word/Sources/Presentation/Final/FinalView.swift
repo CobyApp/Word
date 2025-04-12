@@ -38,15 +38,28 @@ struct FinalView: View {
             
             Spacer()
             
-            Button(action: { self.store.send(.retryQuiz) }) {
-                Text("다시하기")
-                    .font(.pretendard(size: 16, weight: .bold))
-                    .foregroundColor(Color.inverseLabel)
-                    .padding(.vertical, 16)
-                    .frame(maxWidth: .infinity)
-                    .background(Color.blue60)
-                    .cornerRadius(12)
-                    .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
+            HStack(spacing: 12) {
+                Button(action: { self.store.send(.retryQuiz) }) {
+                    Text("다시하기")
+                        .font(.pretendard(size: 16, weight: .bold))
+                        .foregroundColor(Color.inverseLabel)
+                        .padding(.vertical, 16)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue60)
+                        .cornerRadius(12)
+                        .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
+                }
+                
+                Button(action: { self.store.send(.exitToHome) }) {
+                    Text("나가기")
+                        .font(.pretendard(size: 16, weight: .bold))
+                        .foregroundColor(Color.inverseLabel)
+                        .padding(.vertical, 16)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.neutral60)
+                        .cornerRadius(12)
+                        .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
+                }
             }
             .padding(.horizontal, BaseSize.horizantalPadding)
             .padding(.top, 8)

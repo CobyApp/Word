@@ -16,6 +16,7 @@ struct AppCoordinator {
     enum Action {
         case path(StackAction<Path.State, Path.Action>)
         case home(HomeStore.Action)
+        case resetNavigation
     }
     
     @Reducer(state: .equatable)
@@ -42,6 +43,14 @@ struct AppCoordinator {
                 
             case let .path(.element(id: _, action: .quiz(.navigateToFinal(words)))):
                 state.path.append(.final(.init(words: words)))
+                return .none
+                
+            case let .path(.element(id: _, action: .final(.exitToHome))):
+                state.path = StackState()
+                return .none
+                
+            case .resetNavigation:
+                state.path = StackState()
                 return .none
                 
             case .path:

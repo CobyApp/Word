@@ -23,6 +23,7 @@ struct FinalStore: Reducer {
     enum Action: Equatable {
         case retryQuiz
         case dismiss
+        case exitToHome
     }
     
     @Dependency(\.dismiss) private var dismiss
@@ -35,6 +36,9 @@ struct FinalStore: Reducer {
                 
             case .dismiss:
                 return .run { _ in await self.dismiss() }
+                
+            case .exitToHome:
+                return .none
             }
         }
     }
