@@ -26,21 +26,20 @@ struct FinalView: View {
                 title: "헷갈린 단어"
             )
             
-            ScrollView {
-                if self.store.words.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(uiImage: UIImage.icCheck)
-                            .resizable()
-                            .frame(width: 48, height: 48)
-                            .foregroundColor(Color.green60)
-                        
-                        Text("모든 단어를 외웠어요!")
-                            .font(.pretendard(size: 18, weight: .bold))
-                            .foregroundColor(Color.labelNormal)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.vertical, BaseSize.verticalPadding)
-                } else {
+            if self.store.words.isEmpty {
+                VStack(spacing: 16) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(.green)
+                    
+                    Text("헷갈린 단어가 없어요")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(.systemBackground))
+            } else {
+                ScrollView {
                     LazyVStack(spacing: 12) {
                         ForEach(self.store.words, id: \.id) { word in
                             WordRowView(word: word)
