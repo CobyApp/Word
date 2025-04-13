@@ -27,27 +27,44 @@ struct FinalView: View {
             )
             
             ScrollView {
-                LazyVStack(spacing: 12) {
-                    ForEach(self.store.words, id: \.id) { word in
-                        WordRowView(word: word)
-                            .padding(.horizontal, BaseSize.horizantalPadding)
+                if self.store.words.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(uiImage: UIImage.icCheck)
+                            .resizable()
+                            .frame(width: 48, height: 48)
+                            .foregroundColor(Color.green60)
+                        
+                        Text("모든 단어를 외웠어요!")
+                            .font(.pretendard(size: 18, weight: .bold))
+                            .foregroundColor(Color.labelNormal)
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.vertical, BaseSize.verticalPadding)
+                } else {
+                    LazyVStack(spacing: 12) {
+                        ForEach(self.store.words, id: \.id) { word in
+                            WordRowView(word: word)
+                                .padding(.horizontal, BaseSize.horizantalPadding)
+                        }
+                    }
+                    .padding(.vertical, BaseSize.verticalPadding)
                 }
-                .padding(.vertical, BaseSize.verticalPadding)
             }
             
             Spacer()
             
             HStack(spacing: 12) {
-                Button(action: { self.store.send(.retryQuiz) }) {
-                    Text("다시하기")
-                        .font(.pretendard(size: 16, weight: .bold))
-                        .foregroundColor(Color.inverseLabel)
-                        .padding(.vertical, 16)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue60)
-                        .cornerRadius(12)
-                        .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
+                if !store.isLastSet {
+                    Button(action: { self.store.send(.nextQuiz) }) {
+                        Text("다음으로")
+                            .font(.pretendard(size: 16, weight: .bold))
+                            .foregroundColor(Color.inverseLabel)
+                            .padding(.vertical, 16)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.green60)
+                            .cornerRadius(12)
+                            .shadow(color: Color.shadowNormal, radius: 4, x: 0, y: 2)
+                    }
                 }
                 
                 Button(action: { self.store.send(.exitToHome) }) {

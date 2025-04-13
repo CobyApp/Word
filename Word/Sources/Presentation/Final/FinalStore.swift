@@ -14,14 +14,28 @@ struct FinalStore: Reducer {
     @ObservableState
     struct State: Equatable {
         var words: [Word] = []
+        let level: String
+        let range: Int
+        let currentOffset: Int
         
-        init(words: [Word]) {
+        var isLastSet: Bool {
+            let startNumber = range * 100 + 1
+            let endNumber = (range + 1) * 100
+            let currentNumber = startNumber + currentOffset
+            return currentNumber + 10 > endNumber
+        }
+        
+        init(words: [Word], level: String, range: Int, currentOffset: Int) {
             self.words = words
+            self.level = level
+            self.range = range
+            self.currentOffset = currentOffset
         }
     }
     
     enum Action: Equatable {
         case retryQuiz
+        case nextQuiz
         case dismiss
         case exitToHome
     }
@@ -33,6 +47,9 @@ struct FinalStore: Reducer {
             switch action {
             case .retryQuiz:
                 return .send(.dismiss)
+                
+            case .nextQuiz:
+                return .none
                 
             case .dismiss:
                 return .run { _ in await self.dismiss() }

@@ -24,7 +24,7 @@ struct QuizView: View {
             // 상단 타이틀
             TopBarView(
                 leftAction: { self.store.send(.dismiss) },
-                title: "퀴즈"
+                title: "퀴즈 \(self.store.currentOffset / 10 + 1) / 10"
             )
             
             // 상단 진행 상황 막대

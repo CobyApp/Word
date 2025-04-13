@@ -43,7 +43,7 @@ struct RangeDetailStore: Reducer {
                 print("Fetching words for level: \(level), range: \(range)")
                 return .run { send in
                     let result = await TaskResult {
-                        try self.wordContext.fetchByLevelAndRange(level, range)
+                        try self.wordContext.fetchByLevelAndRange(level, range, 0)
                     }
                     await send(.fetchByLevelAndRangeResponse(result))
                 }

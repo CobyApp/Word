@@ -42,11 +42,37 @@ struct AppCoordinator {
                 return .none
                 
             case let .path(.element(id: _, action: .quiz(.navigateToFinal(words)))):
-                state.path.append(.final(.init(words: words)))
+                if case let .quiz(quizState) = state.path.last {
+                    state.path.append(.final(.init(
+                        words: words,
+                        level: quizState.level,
+                        range: quizState.range,
+                        currentOffset: quizState.currentOffset
+                    )))
+                }
                 return .none
                 
             case .path(.element(id: _, action: .final(.exitToHome))):
                 state.path = StackState()
+                return .none
+                
+            case .path(.element(id: _, action: .final(.nextQuiz))):
+                if case let .final(finalState) = state.path.last {
+                    state.path.removeLast()
+                    if finalState.currentOffset >= 90 {
+                        state.path = StackState()
+                    } else {
+                        state.path.append(.quiz(.init(
+                            level: finalState.level,
+                            range: finalState.range,
+                            currentOffset: finalState.currentOffset + 10
+                        )))
+                    }
+                }
+                return .none
+                
+            case .path(.element(id: _, action: .final(.dismiss))):
+                state.path.removeLast()
                 return .none
                 
             case .resetNavigation:

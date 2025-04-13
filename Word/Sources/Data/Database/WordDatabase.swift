@@ -20,7 +20,7 @@ extension DependencyValues {
 struct WordDatabase {
     var fetchAll: @Sendable () throws -> [Word]
     var fetchByLevel: @Sendable (String) throws -> [Word]
-    var fetchByLevelAndRange: @Sendable (String, Int) throws -> [Word]
+    var fetchByLevelAndRange: @Sendable (String, Int, Int) throws -> [Word]
 
     enum WordError: Error {
         case fetchError
@@ -51,11 +51,11 @@ extension WordDatabase: DependencyKey {
             print("Fetched \(models.count) WordModels for level: \(level)")
             return models.map { $0.domain }
         },
-        fetchByLevelAndRange: { level, index in
+        fetchByLevelAndRange: { level, index, offset in
             guard index >= 0 && index < 5 else {
                 throw WordError.invalidRange
             }
-            let start = String(format: "%03d", index * 100 + 1)
+            let start = String(format: "%03d", index * 100 + 1 + offset)
             let end = String(format: "%03d", (index + 1) * 100)
             
             @Dependency(\.databaseService.context) var context

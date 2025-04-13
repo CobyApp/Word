@@ -18,10 +18,15 @@ struct QuizStore: Reducer {
         let level: String
         let range: Int
         var words: [Word] = []
-        var initialWordCount: Int = 0 // 초기 단어 수 저장
+        var initialWordCount: Int = 0
         var currentWordIndex: Int = 0
-        var forgottenWordCounts: [UUID: Int] = [:] // 단어별 '모르겠음' 선택 횟수
-        var rememberedWords: Set<UUID> = [] // '외웠음' 선택된 단어 ID 집합
+        var forgottenWordCounts: [UUID: Int] = [:]
+        var rememberedWords: Set<UUID> = []
+        var currentOffset: Int = 0
+        
+        var isLastSet: Bool {
+            currentOffset >= 90
+        }
         
         // 현재 단어
         var currentWord: Word? {
@@ -38,9 +43,10 @@ struct QuizStore: Reducer {
             return Double(completedWords) / Double(initialWordCount)
         }
         
-        init(level: String, range: Int) {
+        init(level: String, range: Int, currentOffset: Int = 0) {
             self.level = level
             self.range = range
+            self.currentOffset = currentOffset
         }
     }
     
@@ -48,6 +54,7 @@ struct QuizStore: Reducer {
         case navigateToFinal([Word])
         case fetchByLevelAndRange(String, Int)
         case fetchByLevelAndRangeResponse(TaskResult<[Word]>)
+        case fetchNextWords
         case didNotRemember
         case didRemember
         case dismiss
@@ -63,16 +70,17 @@ struct QuizStore: Reducer {
                 return .none
                 
             case .fetchByLevelAndRange(let level, let range):
+                let offset = state.currentOffset
                 return .run { send in
                     let result = await TaskResult {
-                        try self.wordContext.fetchByLevelAndRange(level, range)
+                        try self.wordContext.fetchByLevelAndRange(level, range, offset)
                     }
                     await send(.fetchByLevelAndRangeResponse(result))
                 }
                 
             case let .fetchByLevelAndRangeResponse(.success(words)):
-                state.words = words
-                state.initialWordCount = words.count // 초기 단어 수 저장
+                state.words = Array(words.prefix(10))
+                state.initialWordCount = state.words.count
                 state.currentWordIndex = 0
                 state.forgottenWordCounts = [:]
                 state.rememberedWords = []
@@ -81,6 +89,17 @@ struct QuizStore: Reducer {
             case let .fetchByLevelAndRangeResponse(.failure(error)):
                 print("Error fetching words: \(error.localizedDescription)")
                 return .none
+                
+            case .fetchNextWords:
+                let level = state.level
+                let range = state.range
+                let offset = state.currentOffset + 1
+                return .run { send in
+                    let result = await TaskResult {
+                        try self.wordContext.fetchByLevelAndRange(level, range, offset * 10)
+                    }
+                    await send(.fetchByLevelAndRangeResponse(result))
+                }
                 
             case .didNotRemember:
                 if let currentWord = state.currentWord {
@@ -103,21 +122,17 @@ struct QuizStore: Reducer {
     }
     
     private func moveToNextWord(state: inout State) -> Effect<Action> {
-        // 현재 단어 인덱스를 증가
         state.currentWordIndex += 1
 
-        // 모든 단어가 끝난 경우
+        // All words completed
         if state.currentWordIndex >= state.words.count {
             if state.rememberedWords.count >= state.words.count - 1 {
-                // '모르겠음' 단어가 없으면 가장 많이 몰랐던 단어 상위 10개 추출
                 let mostForgottenWords = state.forgottenWordCounts
                     .sorted { $0.value > $1.value }
                     .prefix(10)
                     .compactMap { id, _ in state.words.first(where: { $0.id == id }) }
-
                 return .send(.navigateToFinal(mostForgottenWords))
             } else {
-                // 잊은 단어로 사이클 반복
                 state.words = state.words.filter {
                     !state.rememberedWords.contains($0.id)
                 }
