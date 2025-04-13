@@ -37,7 +37,6 @@ struct FinalView: View {
                         .fontWeight(.bold)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(.systemBackground))
             } else {
                 ScrollView {
                     LazyVStack(spacing: 12) {
