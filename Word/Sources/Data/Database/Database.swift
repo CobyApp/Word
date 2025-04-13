@@ -10,6 +10,7 @@ import Foundation
 import SwiftData
 import Dependencies
 
+// MARK: - Dependency 등록
 extension DependencyValues {
     var databaseService: Database {
         get { self[Database.self] }
@@ -17,6 +18,7 @@ extension DependencyValues {
     }
 }
 
+// MARK: - 공유 ModelContainer (mutable 아님, 공유 안전)
 fileprivate let sharedContainer: ModelContainer = {
     do {
         let container = try ModelContainer(for: WordModel.self)
@@ -28,27 +30,28 @@ fileprivate let sharedContainer: ModelContainer = {
     }
 }()
 
-let sharedContext: ModelContext = {
-    return ModelContext(sharedContainer)
-}()
-
-struct Database {
-    var context: () throws -> ModelContext
+// MARK: - Database 구조체
+struct Database: @unchecked Sendable {
+    var context: @Sendable () throws -> ModelContext
 }
 
+// MARK: - 실제 런타임 값
 extension Database: DependencyKey {
-    public static let liveValue = Self(
-        context: { sharedContext }
+    static let liveValue = Self(
+        context: {
+            return ModelContext(sharedContainer)
+        }
     )
 }
 
+// MARK: - 테스트용 값
 extension Database: TestDependencyKey {
-    public static var previewValue = Self.noop
-    
-    public static let testValue = Self(
+    static let previewValue = Self.noop
+
+    static let testValue = Self(
         context: unimplemented("\(Self.self).context")
     )
-    
+
     static let noop = Self(
         context: unimplemented("\(Self.self).context")
     )

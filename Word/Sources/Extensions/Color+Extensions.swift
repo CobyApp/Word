@@ -11,7 +11,7 @@ import SwiftUI
 import CobyDS
 
 extension Color {
-    static var mocha: Color = Color(hex: "#A47864")
+    static let mocha: Color = Color(hex: "#A47864")
 }
 
 extension Color {

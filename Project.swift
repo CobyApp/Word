@@ -7,11 +7,13 @@ let targetVersion = "17.0"
 let version = "1.0.1"
 let bundleVersion = "1"
 
-// MARK: Struct
 let project = Project(
     name: projectName,
     organizationName: organizationName,
     settings: .settings(
+        base: SettingsDictionary()
+            .automaticCodeSigning(devTeam: "3Y8YH8GWMM")
+            .swiftVersion("6.0"),
         configurations: [
             .debug(name: .debug),
             .release(name: .release)
@@ -24,10 +26,19 @@ let project = Project(
             product: .app,
             bundleId: bundleID,
             deploymentTargets: .iOS(targetVersion),
-            infoPlist: createInfoPlist(),
+            infoPlist: .extendingDefault(with: [
+                "CFBundleShortVersionString": "\(version)",
+                "CFBundleVersion": "\(bundleVersion)",
+                "UIMainStoryboardFile": "",
+                "UILaunchStoryboardName": "LaunchScreen",
+                "CFBundleDisplayName": "단어백선생"
+            ]),
             sources: ["\(projectName)/Sources/**"],
             resources: ["\(projectName)/Resources/**"],
-            dependencies: defaultDependencies()
+            dependencies: [
+                .external(name: "CobyDS"),
+                .external(name: "ComposableArchitecture")
+            ]
         )
     ],
     schemes: [
@@ -43,21 +54,3 @@ let project = Project(
         )
     ]
 )
-
-private func createInfoPlist() -> InfoPlist {
-    let plist: [String: Plist.Value] = [
-        "CFBundleShortVersionString": "\(version)",
-        "CFBundleVersion": "\(bundleVersion)",
-        "UIMainStoryboardFile": "",
-        "UILaunchStoryboardName": "LaunchScreen",
-        "CFBundleDisplayName": "단어백선생"
-    ]
-    return .extendingDefault(with: plist)
-}
-
-private func defaultDependencies() -> [TargetDependency] {
-    [
-        .external(name: "CobyDS"),
-        .external(name: "ComposableArchitecture")
-    ]
-}

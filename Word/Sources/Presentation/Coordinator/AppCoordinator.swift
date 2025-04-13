@@ -45,7 +45,7 @@ struct AppCoordinator {
                 state.path.append(.final(.init(words: words)))
                 return .none
                 
-            case let .path(.element(id: _, action: .final(.exitToHome))):
+            case .path(.element(id: _, action: .final(.exitToHome))):
                 state.path = StackState()
                 return .none
                 
