@@ -17,6 +17,7 @@ struct FinalStore: Reducer {
         let level: String
         let range: Int
         let currentOffset: Int
+        var hasShownAd: Bool = false
         
         var isLastSet: Bool {
             let startNumber = range * 100 + 1
@@ -48,10 +49,14 @@ struct FinalStore: Reducer {
         Reduce { state, action in
             switch action {
             case .onAppear:
-                print("FinalStore: Showing ad")
-                return .run { _ in
-                    await adManager.showInterstitial()
+                if !state.hasShownAd {
+                    print("FinalStore: Showing ad")
+                    state.hasShownAd = true
+                    return .run { _ in
+                        await adManager.showInterstitial()
+                    }
                 }
+                return .none
                 
             case .retryQuiz:
                 return .send(.dismiss)

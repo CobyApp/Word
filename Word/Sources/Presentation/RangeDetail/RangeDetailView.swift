@@ -55,6 +55,7 @@ struct RangeDetailView: View {
         .background(Color.backgroundNormalAlternative)
         .navigationBarHidden(true)
         .onAppear {
+            self.store.send(.onAppear)
             self.store.send(.fetchByLevelAndRange(self.store.level, self.store.range))
         }
     }

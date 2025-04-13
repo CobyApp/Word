@@ -9,14 +9,10 @@ extension AdManager: DependencyKey {
     static let liveValue = Self(
         showInterstitial: {
             let request = Request()
-            // Add test device
-            request.testDeviceIdentifiers = ["bd2462f48e2778d8785cd05b0e3145a5"]
+            request.keywords = ["education", "language", "learning"]
             
-            guard let adUnitID = Bundle.main.object(forInfoDictionaryKey: "GADAdUnitID") as? String,
-                  !adUnitID.isEmpty else {
-                print("⚠️ Ad Unit ID is missing or empty")
-                return
-            }
+            // Use test ad unit ID during development
+            let adUnitID = "ca-app-pub-3940256099942544/4411468910" // Test ad unit ID
             
             print("Loading ad with unit ID: \(adUnitID)")
             
@@ -37,7 +33,8 @@ extension AdManager: DependencyKey {
                     print("Failed to get root view controller")
                 }
             } catch {
-                print("Error loading ad: \(error.localizedDescription)")
+                print("Error loading ad: \(error)")
+                print("Error description: \(error.localizedDescription)")
             }
         }
     )

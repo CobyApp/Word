@@ -16,6 +16,7 @@ struct RangeDetailStore: Reducer {
         let level: String
         let range: Int
         var words: [Word] = []
+        var hasShownAd: Bool = false
         
         init(level: String, range: Int) {
             self.level = level
@@ -24,6 +25,7 @@ struct RangeDetailStore: Reducer {
     }
     
     enum Action: Equatable {
+        case onAppear
         case fetchByLevelAndRange(String, Int)
         case fetchByLevelAndRangeResponse(TaskResult<[Word]>)
         case navigateToQuiz(String, Int)
@@ -32,10 +34,21 @@ struct RangeDetailStore: Reducer {
     
     @Dependency(\.dismiss) private var dismiss
     @Dependency(\.wordData) private var wordContext
+    @Dependency(\.adManager) private var adManager
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .onAppear:
+                if !state.hasShownAd {
+                    print("RangeDetailStore: Showing ad")
+                    state.hasShownAd = true
+                    return .run { _ in
+                        await adManager.showInterstitial()
+                    }
+                }
+                return .none
+                
             case .navigateToQuiz:
                 return .none
                 
