@@ -11,8 +11,11 @@ extension AdManager: DependencyKey {
             let request = Request()
             request.keywords = ["education", "language", "learning"]
             
-            // Use test ad unit ID during development
-            let adUnitID = "ca-app-pub-3940256099942544/4411468910" // Test ad unit ID
+            // Get ad unit ID from Info.plist
+            guard let adUnitID = Bundle.main.object(forInfoDictionaryKey: "GADAdUnitID") as? String else {
+                print("⚠️ GADAdUnitID not found in Info.plist")
+                return
+            }
             
             print("Loading ad with unit ID: \(adUnitID)")
             
