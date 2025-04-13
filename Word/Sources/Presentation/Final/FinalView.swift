@@ -82,5 +82,8 @@ struct FinalView: View {
         }
         .background(Color.backgroundNormalAlternative)
         .navigationBarHidden(true)
+        .onAppear {
+            self.store.send(.onAppear)
+        }
     }
 }

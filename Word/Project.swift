@@ -56,4 +56,4 @@ let project = Project(
             runAction: .runAction(configuration: .release)
         )
     ]
-)
+) 

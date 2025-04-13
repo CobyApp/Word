@@ -34,6 +34,7 @@ struct FinalStore: Reducer {
     }
     
     enum Action: Equatable {
+        case onAppear
         case retryQuiz
         case nextQuiz
         case dismiss
@@ -41,10 +42,17 @@ struct FinalStore: Reducer {
     }
     
     @Dependency(\.dismiss) private var dismiss
+    @Dependency(\.adManager) private var adManager
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+            case .onAppear:
+                print("FinalStore: Showing ad")
+                return .run { _ in
+                    await adManager.showInterstitial()
+                }
+                
             case .retryQuiz:
                 return .send(.dismiss)
                 
